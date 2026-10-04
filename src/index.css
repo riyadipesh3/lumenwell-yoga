@@ -1,0 +1,299 @@
+/* ============================================================================
+   TEMPLATE 18 - LUMENWELL
+   Yoga and wellness studio, Redland, Bristol. Layout read: a printed studio
+   timetable rather than a marketing site. Cool grey-green canvas, deep
+   eucalyptus accent, high-contrast thin serif display over a soft grotesque.
+   VARIANCE 6 / MOTION 4 / DENSITY 2
+
+   Palette note: the obvious move for wellness is a warm cream page with a
+   brass or clay accent. That family is deliberately rejected here. The canvas
+   is a cool neutral with a faint green cast, the ink is a cool near-black, and
+   the accent is a desaturated deep eucalyptus. Nothing on the page is warm.
+
+   Shape note (one radius system, applied globally):
+     interactive controls  -> 9999px pill (buttons, inputs, selects)
+     everything else       -> 0 (cards, images, frames, timetable cells)
+   A base-layer `*` reset pins everything to 0 so no element can drift into a
+   soft rectangle. It lives in @layer base on purpose: unlayered rules would
+   outrank the components layer and flatten the pill buttons.
+   ========================================================================= */
+
+@import 'tailwindcss';
+
+@import '@fontsource/italiana';
+@import '@fontsource-variable/manrope';
+
+/* --------------------------------------------------------------------------
+   TOKENS
+   -------------------------------------------------------------------------- */
+@theme {
+  --font-display: 'Italiana', 'Times New Roman', serif;
+  --font-body: 'Manrope Variable', system-ui, sans-serif;
+
+  /* Cool neutral canvas, one temperature throughout. */
+  --color-canvas: #f2f4f3;
+  --color-surface: #e8edeb;
+  --color-ink: #17201d;
+  --color-body: #4c5a55;
+  --color-mute: #61706b;
+  --color-hairline: #dbe2df;
+
+  /* Single accent. Deep eucalyptus, 39% saturation, AA on canvas at 5.6:1. */
+  --color-accent: #2f6b5e;
+  --color-accent-soft: #dbe7e2;
+  --color-on-dark: #e4eae7;
+}
+
+:root {
+  --radius: 0px;
+}
+
+/* --------------------------------------------------------------------------
+   RADIUS SYSTEM
+   Everything is square by default. Only interactive controls override this,
+   and they all land on the same 9999px pill. Declared in @layer base so the
+   components layer can win where it needs to.
+   -------------------------------------------------------------------------- */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-radius: var(--radius);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-body);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-canvas);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   COMPONENTS
+   -------------------------------------------------------------------------- */
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: 1400px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .shell {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  /* Italiana is a hairline, very high-contrast serif. It needs more leading
+     than a grotesque, and a little padding under the baseline so descenders
+     in "y" and "p" never touch the next line or clip out of a grid cell. */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.008em;
+    line-height: 1.1;
+    color: var(--color-ink);
+    text-wrap: balance;
+    padding-bottom: 0.05em;
+  }
+
+  .display-xl {
+    font-size: clamp(2.5rem, 5.2vw, 4.75rem);
+    line-height: 1.08;
+  }
+
+  .display-lg {
+    font-size: clamp(2rem, 3.8vw, 3rem);
+    line-height: 1.12;
+  }
+
+  .display-md {
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    line-height: 1.18;
+  }
+
+  .lede {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    max-width: 58ch;
+    color: var(--color-body);
+  }
+
+  /* Small tracked uppercase line. Capped at one per three sections. */
+  .micro {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-mute);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    padding: 0.875rem 1.75rem;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 180ms ease, color 180ms ease,
+      border-color 180ms ease, transform 120ms ease;
+  }
+
+  .btn:active {
+    transform: translateY(1px);
+  }
+
+  .btn-primary {
+    background: var(--color-ink);
+    color: var(--color-canvas);
+  }
+
+  .btn-primary:hover {
+    background: var(--color-accent);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--color-ink);
+    border-color: var(--color-hairline);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--color-ink);
+  }
+
+  /* Pill row of form controls, matching the button radius. */
+  .field {
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--color-ink);
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: 9999px;
+    padding: 0.8125rem 1.125rem;
+    transition: border-color 160ms ease;
+  }
+
+  textarea.field {
+    border-radius: 0.75rem;
+    padding: 1rem 1.125rem;
+    line-height: 1.6;
+    resize: vertical;
+  }
+
+  .field::placeholder {
+    color: var(--color-mute);
+  }
+
+  .field:focus {
+    border-color: var(--color-accent);
+    outline: none;
+  }
+
+  .frame {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Timetable. A real grid: a time gutter plus one column per day. Cells are
+     separated by a 1px background gap rather than borders on every cell. */
+  .tt {
+    display: grid;
+    grid-template-columns: 5.25rem repeat(6, minmax(8.25rem, 1fr));
+    gap: 1px;
+    background: var(--color-hairline);
+    border: 1px solid var(--color-hairline);
+    min-width: 56rem;
+  }
+
+  .tt-cell {
+    background: var(--color-canvas);
+    padding: 0.9375rem 1rem;
+    min-height: 5.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .tt-head {
+    background: var(--color-canvas);
+    padding: 0.9375rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-mute);
+  }
+
+  .tt-time {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--color-canvas);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.8125rem;
+    color: var(--color-mute);
+    letter-spacing: 0.02em;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+@source "./**/*.{tsx,ts}";
